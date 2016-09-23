@@ -1,0 +1,8 @@
+/target/*
+*.iml
+.idea/
+customized-API/target/
+customized-common/target/
+customized-dao/target/
+customized-entity/target/
+customized-ios/target/

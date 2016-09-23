@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.customized.goods.dao.IGoodsListDao">
+	<resultMap type="com.customized.goods.pojo.GoodsListBean" id="goodsListMap">
+	</resultMap>
+	<select id="queryGoodsList" resultMap="goodsListMap" useCache="false">
+		select
+			  goods.`v_good_id` AS goodsID ,goods.`v_good_name` AS goodsName,
+			  goods.`v_title` AS goodsTitle,goods.`i_price` AS goodsTotalPrice
+			  ,crowdgood.i_issue AS goodsPID,
+			  (goods.`i_price` - crowdgood.i_remaintimes) AS goodsSell ,
+			  crowdgood.i_remaintimes AS goodsRemainl, goodsave.i_limited AS isLimited,
+			  files.v_cfilepath AS goodsThumbnail ,(cgood.qsz-crowdgood.i_issue) goodsRemainl,
+			  params.v_value AS goodsType , goodsave.i_nowopen AS isNowOpen
+		from mm_goods_base_info goods
+		left join mm_crowdgood_info crowdgood
+		on goods.`v_good_id` = crowdgood.`v_good_id`
+		left join mm_goods_params params
+		on params.v_key = goods.v_attribute_id
+		left join mm_goods_save_info goodsave
+		on goods.`v_good_id` = goodsave.`v_good_id`
+		left join mm_sys_file_info files
+		on files.`v_other_id` = goods.`v_good_id`
+		left join
+		(select count(v_crowd_id) qsz ,v_good_id from mm_crowdgood_info GROUP BY `v_good_id`) cgood
+				on goods.`v_good_id` = cgood.`v_good_id`
+		WHERE params.v_type = 'SPLB' AND crowdgood.v_issue_state = 1
+		<if test="classification != null and classification != '' ">
+			AND params.v_type = #{goodsListBean.classification}
+		</if>
+		<if test="sort != null and sort != '' ">
+			ORDER BY goodsave.i_hot
+		</if>
+		LIMIT 0,9
+	</select>
+</mapper> 

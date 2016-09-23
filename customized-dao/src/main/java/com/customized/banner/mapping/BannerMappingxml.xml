@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.customized.banner.dao.IBannerDao">
+	<resultMap type="com.customized.Banner.pojo.BannerBean" id="banner">
+		
+	</resultMap>
+	<select id="queryBanner" resultMap="banner" useCache="false">
+		select v_goods_pid AS goodsPID,v_good_id as goodsID,v_content_url AS contentUrl,v_cfilepath AS imageUrl,v_value AS bannerType from mm_inter_contents contents
+		left join mm_inter_params params
+		on contents.`v_content_id` = params.`v_key`
+		left join mm_sys_file_info info
+		on contents.v_img_id=v_other_id
+		LEFT JOIN mm_crowdgood_info crowdgood
+		ON contents.v_goods_pid = crowdgood.v_crowd_id
+		<!-- 暂时去除了。数据不对。增加条件后无法正常显示了。-->
+		<!--where (params.`v_value` = '0' or params.`v_value` = '1') and crowdgood.v_issue_state = 1-->
+		limit 0,3
+	</select>
+</mapper> 

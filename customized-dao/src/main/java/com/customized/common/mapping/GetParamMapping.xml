@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.customized.common.dao.IGetParamDao">
+ 	 
+	<select id="getParamValue" resultType="java.lang.String" useCache="false">
+		SELECT
+			param.v_value
+		FROM
+			mm_sys_param param
+		WHERE 
+			param.v_key = #{key}
+		AND param.i_available = 1
+		LIMIT 1
+	</select>
+</mapper> 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.customized.announced.dao.IAnnouncedDao">
+	<resultMap type="com.customized.announced.pojo.AnnouncedBean" id="announced">
+		
+	</resultMap>
+	<select id="queryAnnounced" resultMap="announced" useCache="false">
+		select goods.`v_good_id` as goodsID , crowd.`v_crowd_id` as goodsPID, u.`v_nickname` as winerNick,
+		u.`v_user_id` AS winerID, u.`v_reg_ip` as cityIP , u.`v_reg_addr` as city , crowdfunding.`t_opened_time` as openTime ,
+		file.`v_cfilepath` as headurl , win.`i_joinintimes` as winJoinTime , crowdfunding.`v_luckyno` AS winNum
+		from mm_crowdgood_info crowd
+		left join mm_goods_base_info goods
+		on crowd.`v_good_id` = goods.`v_good_id`
+		left join mm_crowdwinning_info win
+		on crowd.`v_crowd_id` = win.`v_crowd_id`
+		left join mm_user_base_info u
+		on win.`v_user_id` = u.`v_user_id`
+		left join mm_crowdfunding_info crowdfunding
+		on crowdfunding.`v_crowd_id` = crowd.`v_crowd_id`
+		left join mm_goods_params params
+		on crowdfunding.`v_crowd_status` = params.`v_key`
+		left join mm_sys_file_info file
+		on u.`v_user_id` = file.`v_other_id`
+		where crowd.`v_good_id` = 'g1001' and params.`v_type` = 'ZCZT'
+		limit 0,20
+	</select>
+</mapper> 

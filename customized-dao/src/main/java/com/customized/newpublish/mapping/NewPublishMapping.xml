@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.customized.newpublish.dao.INewPublishDao">
+	<resultMap type="com.customized.newpublish.pojo.NewPublishGoodPojo" id="newgoodpojo"></resultMap>	
+	<!-- 
+	" goodsStatus": "1",	//商品状态    				 mm_crowdfunding_info -> v_crowd_status
+	" goodsType": "1",		//商品类型，十元，限购等	 mm_goods_save_info -> v_save_type
+	" goodsThumbnail": "http://x.jpg",	//缩略图   	 mm_goods_base_info -> v_imgs
+	" goodsLotteryTime	": "298", 	//等待开奖时间 时间戳   mm_crowdfunding_info -> (t_opened_time - now()) 这个有问题
+	" goodsID	": "888",	//商品ID					mm_goods_base_info -> v_good_id
+	" goodsPID	": "20",	//期数					mm_crowdgood_info -> i_issue
+	" goodsName	": "Iphone6s Plus",	//名称			mm_goods_base_info -> v_good_name
+	" goodsTitle"："金色"，	//商品副标题				mm_goods_base_info -> v_vice_title
+	" attendCount"，"3",		//参与次数				mm_crowdwinning_info -> i_joinintimes
+	" openTime	":  "",		//揭晓时间				mm_crowdfunding_info -> t_opened_time
+	" userHeadUrl": "headurl",	//用户头像			mm_user_base_info -> v_headpic
+	" userName	": "刘伟",	//用户昵称				mm_user_base_info -> v_nickname
+	" goodsPrice": "100",	//总价 					mm_goods_base_info -> i_price
+ 	-->
+ 	 
+	<select id="getNewPublish" resultMap="newgoodpojo" useCache="false">
+		select crowdinfo.v_crowd_status as goodsStatus,
+			gsave.v_save_type as goodsType,
+			crowdinfo.t_opened_time as openTime,
+			(crowdinfo.t_opened_time - now()) as goodsLotteryTime,
+			crowdgood.i_issue as goodsPID,
+			gbase.v_good_name as goodsName,
+			gbase.v_vice_title as goodsTitle, 
+			gbase.i_price as goodsPrice,
+			gbase.v_good_id  as goodsID,
+			gbase.v_imgs as goodsThumbnail,
+			crowdwin.i_joinintimes as attendCount,
+			ubase.v_nickname as userName,
+			ubase.v_headpic as userHeadUrl
+		from mm_crowdfunding_info crowdinfo  
+		left join mm_crowdgood_info crowdgood on crowdinfo.v_crowd_id = crowdgood.v_crowd_id 
+		left join mm_goods_base_info gbase on gbase.v_good_id = crowdgood.v_good_id
+		left join mm_goods_save_info gsave on gsave.v_good_id = crowdgood.v_good_id
+		left join mm_crowdwinning_info crowdwin on crowdinfo.v_crowd_id = crowdwin.v_crowd_id 
+		left join mm_user_base_info ubase on ubase.v_user_id = crowdwin.v_user_id
+		<trim prefix="where" prefixOverrides="and|or">
+		  	  crowdinfo.v_crowd_status > 0
+		</trim>
+			  order by crowdinfo.v_crowd_status 
+		<if test=" type == 0 ">
+		  LIMIT #{defaultnum}
+		</if>
+		<if test=" type == 1 ">
+		  LIMIT #{basicpojo.pageNum},#{basicpojo.pageSize} 
+		</if>
+	</select>
+</mapper> 

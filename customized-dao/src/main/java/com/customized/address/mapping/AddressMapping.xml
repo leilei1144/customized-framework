@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.customized.address.dao.IAddressDao">
+	<resultMap type="com.customized.address.pojo.AddressListBean" id="addMap">
+		
+	</resultMap>
+
+	<select id="searchAddress" resultMap="addMap" useCache="false">
+		SELECT v_name as takeName,v_address as takeAddress,v_tel as takePhone,v_recharge_tel as rechargeTel,
+			 v_qq as rechargeQQ,v_alipay as thirdAddress,v_alipay_name as thirdName
+		from mm_user_addrs_info
+		where v_user_id=#{0}
+	</select>
+</mapper> 

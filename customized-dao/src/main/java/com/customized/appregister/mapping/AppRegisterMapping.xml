@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.customized.appregister.dao.IAppRegisterDao">
+	<resultMap type="com.customized.login.pojo.UserMessageBean" id="userMap">
+		
+	</resultMap>
+
+	<select id="findUserExist" resultMap="userMap" useCache="false">
+		SELECT v_user_id from mm_user_login_info WHERE v_account=#{0}
+	</select>
+
+	<insert id="insertUser" parameterType="com.customized.register.pojo.UserRegisterBean">
+		insert into mm_user_login_info (id,v_user_id,v_account,v_password) VALUES (#{cguid},#{userID},#{username},#{upwd})
+	</insert>
+</mapper> 

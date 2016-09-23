@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.customized.horn.dao.IHornDao">
+	<resultMap type="com.customized.Horn.pojo.HornBean" id="hornMap">
+		
+	</resultMap>
+	<select id="getHorns" resultMap="hornMap" useCache="false">
+		select cgood.v_good_id,cgood.i_issue,ubase.v_nickname,goods.v_good_name,goods.v_url from mm_crowdwinning_info win
+		       left join mm_crowdgood_info cgood on win.v_crowd_id=cgood.v_crowd_id 
+		       left join mm_user_base_info ubase on win.v_user_id=ubase.v_user_id 
+		       left join mm_goods_base_info goods on cgood.v_good_id=goods.v_good_id 
+		order by win.t_created_time desc 
+		limit 0,#{pageSize}
+	</select>
+</mapper> 

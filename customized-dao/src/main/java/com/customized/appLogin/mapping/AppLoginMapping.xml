@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.customized.appLogin.dao.IAppLoginDao">
+	<resultMap type="com.customized.login.pojo.UserMessageBean" id="userMap">
+		
+	</resultMap>
+
+	<select id="findUser" resultMap="userMap" useCache="false">
+		SELECT ub.v_nickname as userNickName,sf.v_cfilepath as headUrl,ua.d_balance_amount as balance FROM
+			mm_user_base_info ub
+			LEFT JOIN mm_user_login_info ul on ub.v_user_id=ul.v_user_id
+			LEFT JOIN mm_sys_file_info sf on ub.v_headpic=sf.v_other_id
+			LEFT JOIN mm_user_account_info ua on ub.v_user_id= ua.v_user_id
+			<trim prefix="where" prefixOverrides="and|or">
+				<if test="userID!=null and userID!=''">
+					where ub.v_user_id=#{userID}
+				</if>
+				<if test="phoneNum!=null and phoneNum!=''">
+					and binary ul.v_account=#{phoneNum}
+				</if>
+				<if test="QQNum!=null and QQNum!=''">
+					and binary ul.v_account=#{QQNum}
+				</if><if test="weChat!=null and weChat!=''">
+					and binary ul.v_account=#{weChat}
+				</if>
+				<if test="upwd!=null and upwd!=''">
+					and ul.v_password=#{upwd}
+				</if>
+			</trim>
+	</select>
+</mapper> 

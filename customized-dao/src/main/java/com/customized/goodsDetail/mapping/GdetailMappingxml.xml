@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.customized.goodsDetail.dao.IGdetailDao">
+	<resultMap type="com.customized.goodsDetail.pojo.GoodsDetailBean" id="gDetailMap">
+		
+	</resultMap>
+	<select id="getDetail" resultMap="gDetailMap" useCache="false">
+		select gb.v_url as goodsDetail,cf.v_crowd_status as goodsStatus,gb.v_good_name as goodsName,gb.i_price as goodsTotalPrice,
+				(cg.i_totaltimes-cg.i_remaintimes) as goodsSell,gs.i_nowopen as isNowOpen,gs.i_limited as isLimited,
+			    gs.i_remaining_term as goodsMultiPeriod from mm_crowdgood_info cg
+			    left join mm_crowdfunding_info cf on cg.v_crowd_id = cf.v_crowd_id
+			    left join mm_goods_base_info gb on cg.v_good_id = gb.v_good_id
+				left join mm_goods_save_info gs on cg.v_good_id = gs.v_good_id
+				<trim prefix="where" prefixOverrides="and|or">
+					<if test="goodsID!=null and goodsID!=''">
+						where cg.v_good_id=#{goodsID}
+					</if>
+					<if test="goodsPID!=null and goodsPID!=''">
+						AND cg.i_issue=#{goodsPID}
+					</if>
+				</trim>
+	</select>
+
+	<select id="getImgsUrl" resultMap="gDetailMap" useCache="false">
+		SELECT sf.v_cfilepath as goodsName from mm_sys_file_info sf
+		  left join mm_goods_base_info gb on gb.v_imgs = sf.v_other_id
+	</select>
+
+	<select id="getWinMessage" resultMap="gDetailMap" useCache="false">
+		select ub.v_nickname as userName,cf.v_luckyno as winNum,sf.v_cfilepath as headurl,cw.i_joinintimes as winJoinTime,
+			    cw.v_ip_addr as cityIP,cf.t_opened_time as openTime from mm_crowdgood_info cg
+			    left join mm_crowdwinning_info cw on cg.v_crowd_id =cw.v_crowd_id
+			    left join mm_user_base_info ub on cw.v_user_id = ub.v_user_id
+			    left join mm_crowdfunding_info cf on cw.v_crowd_id= cf.v_crowd_id
+			    left join mm_sys_file_info sf on ub.v_headpic=sf.v_other_id
+				<trim prefix="where" prefixOverrides="and|or">
+					<if test="goodsID!=null and goodsID!=''">
+						where cg.v_good_id=#{goodsID}
+					</if>
+					<if test="goodsPID!=null and goodsPID!=''">
+						AND cg.i_issue=#{goodsPID}
+					</if>
+					<if test="userID!=null and userID!=''">
+						AND  cp.v_user_id=#{userID}
+					</if>
+				</trim>
+	</select>
+
+	<select id="getJoinTimes" resultMap="gDetailMap" useCache="false">
+		select sum(cp.i_joinintimes) as myJoinTime from mm_crowdpartake_info cp
+		 LEFT  JOIN mm_crowdgood_info cg on cg.v_crowd_id=cp.v_crowd_id
+		<trim prefix="where" prefixOverrides="and|or">
+			<if test="gp.goodsID!=null and gp.goodsID!=''">
+				where cg.v_good_id=#{gp.goodsID}
+			</if>
+			<if test="gp.goodsPID!=null and gp.goodsPID!=''">
+				AND cg.i_issue=#{gp.goodsPID}
+			</if>
+			<if test="gp.userID!=null and gp.userID!=''">
+				AND  cp.v_user_id=#{gp.userID}
+			</if>
+		</trim>
+	</select>
+</mapper> 

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.customized.common.dao.IGetPicDao">
+ 	 
+	<select id="getPicUrl" resultType="java.lang.String" useCache="false">
+		SELECT
+			file.v_cfilepath
+		FROM
+			mm_sys_file_info file
+		LEFT JOIN mm_inter_appversion app ON file.v_app_version = app.v_app_version_id
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+		  <if test="otherid != null and otherid != ''">
+		    file.v_other_id = #{otherid}
+		  </if>
+		  <if test="type != null and type != ''">
+		    AND file.i_type = #{type}
+		  </if>
+		  <if test="appversion !=null and appversion != '' ">
+		  	AND app.v_app_id = #{appversion}
+		  </if>
+		</trim>
+		 	ORDER BY file.i_order DESC
+	</select>
+</mapper> 
